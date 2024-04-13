@@ -158,10 +158,7 @@ LongNumber LongNumber::operator-() const
 
 bool LongNumber::operator==(const LongNumber& n)
 {
-	LongNumber copy(*this);
-	_checkZero(copy);
-
-	return copy._negative == n._negative;
+	return _negative == n._negative && _data == n._data;
 }
 
 std::string LongNumber::getString() const
