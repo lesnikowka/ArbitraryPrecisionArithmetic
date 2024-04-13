@@ -61,9 +61,18 @@ std::pair<std::vector<TYPE>, bool> LongNumber::getData() const
 
 LongNumber LongNumber::operator+(const LongNumber& n) const
 {
+	if (_negative && !n._negative)
+	{
+		return n - (-(*this));
+	}
+	if (!_negative && n._negative)
+	{
+		return *this - (-n);
+	}
+
 	LongNumber result;
 
-	if (_negative && result._negative)
+	if (_negative && n._negative)
 	{
 		result._negative = true;
 	}
@@ -113,18 +122,46 @@ LongNumber LongNumber::operator+(const LongNumber& n) const
 	return result;
 }
 
-void LongNumber::operator+=(const LongNumber& n) const
+void LongNumber::operator+=(const LongNumber& n)
 {
-	
+	*this = *this + n;
 }
 
 LongNumber LongNumber::operator-(const LongNumber& n) const
 {
+	if (_negative && !n._negative)
+	{
+		return (-(*this)) + n;
+	}
+	if (!_negative && n._negative)
+	{
+		return *this + (-n);
+	}
+
+	LongNumber result;
 
 }
 
-void LongNumber::operator-=(const LongNumber& n) const
+void LongNumber::operator-=(const LongNumber& n)
 {
+	*this = *this - n;
+}
+
+LongNumber LongNumber::operator-() const
+{
+	LongNumber result(*this);
+
+	result._negative = result._negative ? false : true;
+
+	return result;
+}
+
+bool LongNumber::operator==(const LongNumber& n)
+{
+	LongNumber copy(*this);
+	_checkZero(copy);
+
+	return copy._negative == n._negative;
 }
 
 std::string LongNumber::getString() const

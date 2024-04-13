@@ -22,9 +22,11 @@ public:
 	std::pair<std::vector<TYPE>, bool> getData() const;
 
 	LongNumber operator+(const LongNumber& n) const;
-	void operator+=(const LongNumber& n) const;
+	void operator+=(const LongNumber& n);
 	LongNumber operator-(const LongNumber& n) const;
-	void operator-=(const LongNumber& n) const;
+	void operator-=(const LongNumber& n);
+	LongNumber operator-() const;
+	bool operator==(const LongNumber& n);
 
 
 	std::string getString() const;
