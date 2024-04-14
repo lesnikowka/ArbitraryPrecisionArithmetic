@@ -104,35 +104,37 @@ LongNumber LongNumber::operator+(const LongNumber& n) const
 	size_t minSize = std::min(_data.size(), n._data.size());
 	size_t maxSize = std::min(_data.size(), n._data.size());
 
+	BIG_TYPE resVal = 0;
 	TYPE quot = 0;
+	TYPE rem = 0;
 
 	for (size_t i = 0; i < minSize; i++)
 	{
-		BIG_TYPE resVal = static_cast<BIG_TYPE>(_data[i])
+		resVal = static_cast<BIG_TYPE>(_data[i])
 			+ static_cast<BIG_TYPE>(n._data[i]) + 
 			static_cast<BIG_TYPE>(quot);
-		TYPE quot = resVal / _getMaxTypeValue();
-		TYPE rem = resVal % _getMaxTypeValue();
+		quot = resVal / _getMaxTypeValue();
+		rem = resVal % _getMaxTypeValue();
 		
 		result._data.push_back(rem);
 	}
 
 	for (size_t i = minSize; i < _data.size(); i++)
 	{
-		BIG_TYPE resVal = static_cast<BIG_TYPE>(_data[i]) +
+		resVal = static_cast<BIG_TYPE>(_data[i]) +
 			static_cast<BIG_TYPE>(quot);
-		TYPE quot = resVal / _getMaxTypeValue();
-		TYPE rem = resVal % _getMaxTypeValue();
+		quot = resVal / _getMaxTypeValue();
+		rem = resVal % _getMaxTypeValue();
 		
 		result._data.push_back(rem);
 	}
 
 	for (size_t i = minSize; i < n._data.size(); i++)
 	{
-		BIG_TYPE resVal = static_cast<BIG_TYPE>(n._data[i]) +
+		resVal = static_cast<BIG_TYPE>(n._data[i]) +
 			static_cast<BIG_TYPE>(quot);
-		TYPE quot = resVal / _getMaxTypeValue();
-		TYPE rem = resVal % _getMaxTypeValue();
+		quot = resVal / _getMaxTypeValue();
+		rem = resVal % _getMaxTypeValue();
 
 		result._data.push_back(rem);
 	}
@@ -209,7 +211,7 @@ LongNumber LongNumber::operator-(const LongNumber& n) const
 		else
 		{
 			fut = 1;
-			val = static_cast<BIG_TYPE>(curDataVal) + _getMaxTypeValue()
+			val = static_cast<BIG_TYPE>(curDataVal) + _getMaxTypeValue() + 1
 				- static_cast<BIG_TYPE>(n._data[i]);
 		}
 		result._data.push_back(val);
@@ -246,7 +248,7 @@ LongNumber LongNumber::operator-() const
 {
 	LongNumber result(*this);
 
-	result._negative = result._negative ? false : true;
+	result._negative = !result._negative;
 
 	return result;
 }
@@ -390,7 +392,9 @@ void LongNumber::_checkZero(LongNumber& n)
 		}
 	}
 
-	std::vector<TYPE> cropped(n._data.begin(), n._data.begin() + firstNonZero + 1);
+	long long shift = firstNonZero + 1LL;
+
+	std::vector<TYPE> cropped(n._data.begin(), n._data.begin() + shift);
 	n._data = std::move(cropped);
 }
 

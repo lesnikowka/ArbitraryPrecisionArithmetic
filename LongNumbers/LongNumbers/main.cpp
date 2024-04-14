@@ -3,8 +3,8 @@
 
 int main()
 {
-    LongNumber n1("1");
-    LongNumber n2("2");
+    LongNumber n1("-12");
+    LongNumber n2("-12");
 
     LongNumber n3 = n1 - n2;
 
