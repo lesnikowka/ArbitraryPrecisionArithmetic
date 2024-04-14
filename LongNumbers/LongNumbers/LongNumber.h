@@ -20,6 +20,8 @@ public:
 	void operator+=(const LongNumber& n);
 	LongNumber operator-(const LongNumber& n) const;
 	void operator-=(const LongNumber& n);
+	LongNumber operator*(const LongNumber& n);
+	void operator*=(const LongNumber& n);
 	LongNumber operator-() const;
 	bool operator==(const LongNumber& n) const;
 	bool operator<(const LongNumber& n) const;
@@ -37,7 +39,6 @@ private:
 	static void _checkZero(LongNumber& n);
 	static BIG_TYPE _getMaxTypeValue();
 	
-
 	std::vector<TYPE> _data;
 	bool _negative = false;
 };

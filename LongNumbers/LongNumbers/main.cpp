@@ -3,10 +3,10 @@
 
 int main()
 {
-    LongNumber n1("-12");
-    LongNumber n2("-12");
+    LongNumber n1("-56");
+    LongNumber n2("27");
 
-    LongNumber n3 = n1 - n2;
+    LongNumber n3 = n1 * n2;
 
     std::string s = n3.getString();
 
