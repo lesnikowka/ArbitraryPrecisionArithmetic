@@ -1,5 +1,37 @@
 #include "LongNumber.h"
 
+#include <unordered_map>
+
+namespace
+{
+	std::unordered_map<char, TYPE> charToTYPE =
+	{
+		{'0', 0},
+		{'1', 1},
+		{'2', 2},
+		{'3', 3},
+		{'4', 4},
+		{'5', 5},
+		{'6', 6},
+		{'7', 7},
+		{'8', 8},
+		{'9', 9},
+	};
+
+	std::unordered_map<TYPE, char> typeToChar =
+	{
+		{0, '0'},
+		{1, '1'},
+		{2, '2'},
+		{3, '3'},
+		{4, '4'},
+		{5, '5'},
+		{6, '6'},
+		{7, '7'},
+		{8, '8'},
+		{9, '9'},
+	};
+}
 
 LongNumber::LongNumber()
 	: _negative(false)
@@ -18,50 +50,37 @@ LongNumber::LongNumber(LongNumber&& n) noexcept
 {
 }
 
-LongNumber::LongNumber(int64_t n)
+LongNumber::LongNumber(std::string s)
 {
-	_negative = n < 0;
-}
+	if (s.size() == 0)
+	{
+		return;
+	}
+	else if (s[0] == '-')
+	{
+		_negative = true;
+	}
 
-LongNumber::LongNumber(const std::vector<TYPE>& data, bool negative)
-	: _data(data)
-	, _negative(negative)
-{
-}
-
-LongNumber::LongNumber(std::vector<TYPE>&& data, bool negative)
-	: _data(std::move(data))
-	, _negative(negative)
-{
+	for (long long i = s.size() - 1; i >= (int)(s[0] == '-'); i--)
+	{
+		_data.push_back(charToTYPE[s[i]]);
+	}
 }
 
 LongNumber& LongNumber::operator=(const LongNumber& n)
 {
 	_data = n._data;
 	_negative = n._negative;
+
+	return *this;
 }
 
 LongNumber& LongNumber::operator=(LongNumber&& n) noexcept
 {
 	_data = std::move(n._data);
 	_negative = n._negative;
-}
 
-void LongNumber::setData(const std::vector<TYPE>& data, bool negative)
-{
-	_data = data;
-	_negative = negative;
-}
-
-void LongNumber::setData(std::vector<TYPE>&& data, bool negative)
-{
-	_data = std::move(data);
-	_negative = negative;
-}
-
-std::pair<std::vector<TYPE>, bool> LongNumber::getData() const
-{
-	return std::make_pair(_data, _negative);
+	return *this;
 }
 
 LongNumber LongNumber::operator+(const LongNumber& n) const
@@ -276,7 +295,24 @@ bool LongNumber::operator>=(const LongNumber& n) const
 
 std::string LongNumber::getString() const
 {
-	return std::string();
+	if (_data.size() == 0)
+	{
+		return "0";
+	}
+
+	std::string s;
+
+	if (_negative)
+	{
+		s += "-";
+	}
+
+	for (long long i = _data.size() - 1; i >= 0; i--)
+	{
+		s += typeToChar[_data[i]];
+	}
+
+	return s;
 }
 
 bool LongNumber::_absIsLess(const LongNumber& n) const
@@ -343,7 +379,7 @@ bool LongNumber::_absIsEqual(const LongNumber& n) const
 
 void LongNumber::_checkZero(LongNumber& n)
 {
-	long long firstNonZero = 0;
+	long long firstNonZero = -1;
 
 	for (long long i = n._data.size() - 1; i >= 0; i--)
 	{
@@ -354,7 +390,7 @@ void LongNumber::_checkZero(LongNumber& n)
 		}
 	}
 
-	std::vector<TYPE> cropped(n._data.begin(), n._data.begin() + firstNonZero);
+	std::vector<TYPE> cropped(n._data.begin(), n._data.begin() + firstNonZero + 1);
 	n._data = std::move(cropped);
 }
 

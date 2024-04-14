@@ -13,15 +13,9 @@ public:
 	LongNumber();
 	LongNumber(const LongNumber& n);
 	LongNumber(LongNumber&& n) noexcept;
-	LongNumber(int64_t n);
-	LongNumber(const std::vector<TYPE>& data, bool negative);
-	LongNumber(std::vector<TYPE>&& data, bool negative);
+	LongNumber(std::string s);
 	LongNumber& operator=(const LongNumber& n);
 	LongNumber& operator=(LongNumber&& n) noexcept;
-	void setData(const std::vector<TYPE>& data, bool negative);
-	void setData(std::vector<TYPE>&& data, bool negative);
-	std::pair<std::vector<TYPE>, bool> getData() const;
-
 	LongNumber operator+(const LongNumber& n) const;
 	void operator+=(const LongNumber& n);
 	LongNumber operator-(const LongNumber& n) const;
@@ -45,5 +39,5 @@ private:
 	
 
 	std::vector<TYPE> _data;
-	bool _negative;
+	bool _negative = false;
 };
