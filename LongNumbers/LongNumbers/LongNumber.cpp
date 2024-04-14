@@ -12,10 +12,15 @@ LongNumber::LongNumber(const LongNumber& n)
 {
 }
 
-LongNumber::LongNumber(LongNumber&& n)
+LongNumber::LongNumber(LongNumber&& n) noexcept
 	: _data(std::move(n._data))
 	, _negative(n._negative)
 {
+}
+
+LongNumber::LongNumber(int64_t n)
+{
+	_negative = n < 0;
 }
 
 LongNumber::LongNumber(const std::vector<TYPE>& data, bool negative)
@@ -36,7 +41,7 @@ LongNumber& LongNumber::operator=(const LongNumber& n)
 	_negative = n._negative;
 }
 
-LongNumber& LongNumber::operator=(LongNumber&& n)
+LongNumber& LongNumber::operator=(LongNumber&& n) noexcept
 {
 	_data = std::move(n._data);
 	_negative = n._negative;
@@ -77,8 +82,6 @@ LongNumber LongNumber::operator+(const LongNumber& n) const
 		result._negative = true;
 	}
 
-	// for all positive or all negative
-
 	size_t minSize = std::min(_data.size(), n._data.size());
 	size_t maxSize = std::min(_data.size(), n._data.size());
 
@@ -94,7 +97,6 @@ LongNumber LongNumber::operator+(const LongNumber& n) const
 		
 		result._data.push_back(rem);
 	}
-
 
 	for (size_t i = minSize; i < _data.size(); i++)
 	{
@@ -140,6 +142,80 @@ LongNumber LongNumber::operator-(const LongNumber& n) const
 
 	LongNumber result;
 
+	if (!_negative && !n._negative)
+	{
+		if (*this < n)
+		{
+			result = n - *this;
+			result._negative = true;
+			return result;
+		}
+		else 
+		{
+			result._negative = false;
+		}
+	}
+
+	if (_negative && n._negative)
+	{
+		if (n._absIsGreater(*this))
+		{
+			result = n - *this;
+			result._negative = false;
+			return result;
+		}
+		else
+		{
+			result._negative = true;
+		}
+	}
+
+	size_t minSize = std::min(_data.size(), n._data.size());
+	size_t maxSize = std::min(_data.size(), n._data.size());
+
+	BIG_TYPE fut = 0;
+	BIG_TYPE val = 0;
+	BIG_TYPE curDataVal = 0;
+
+	for (size_t i = 0; i < minSize; i++)
+	{
+		curDataVal = static_cast<BIG_TYPE>(_data[i]) - fut;
+		
+
+		if (curDataVal >= n._data[i])
+		{
+			val = curDataVal - n._data[i];
+			fut = 0;
+		}
+		else
+		{
+			fut = 1;
+			val = static_cast<BIG_TYPE>(curDataVal) + _getMaxTypeValue()
+				- static_cast<BIG_TYPE>(n._data[i]);
+		}
+		result._data.push_back(val);
+	}
+
+	for (size_t i = minSize; i < _data.size(); i++)
+	{
+		curDataVal = static_cast<BIG_TYPE>(_data[i]) - fut;
+
+		if (curDataVal >= 0)
+		{
+			val = curDataVal;
+			fut = 0;
+		}
+		else {
+			val = curDataVal + _getMaxTypeValue();
+			fut = 1;
+		}
+
+		result._data.push_back(val);
+	}
+
+	_checkZero(result);
+
+	return result;
 }
 
 void LongNumber::operator-=(const LongNumber& n)
@@ -158,7 +234,7 @@ LongNumber LongNumber::operator-() const
 
 bool LongNumber::operator==(const LongNumber& n) const
 {
-	return _negative == n._negative && _data == n._data;
+	return _data.size() == 0 && n._data.size() == 0 || _negative == n._negative && _data == n._data;
 }
 
 bool LongNumber::operator<(const LongNumber& n) const
@@ -284,5 +360,6 @@ void LongNumber::_checkZero(LongNumber& n)
 
 BIG_TYPE LongNumber::_getMaxTypeValue()
 {
-	return static_cast<BIG_TYPE>(std::numeric_limits<TYPE>::max());
+	//return static_cast<BIG_TYPE>(std::numeric_limits<TYPE>::max());
+	return 9;
 }

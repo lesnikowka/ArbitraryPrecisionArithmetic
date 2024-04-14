@@ -5,18 +5,19 @@
 #include <string>
 
 #define TYPE uint8_t
-#define BIG_TYPE uint64_t
+#define BIG_TYPE int64_t
 
 class LongNumber
 {
 public:
 	LongNumber();
 	LongNumber(const LongNumber& n);
-	LongNumber(LongNumber&& n);
+	LongNumber(LongNumber&& n) noexcept;
+	LongNumber(int64_t n);
 	LongNumber(const std::vector<TYPE>& data, bool negative);
 	LongNumber(std::vector<TYPE>&& data, bool negative);
 	LongNumber& operator=(const LongNumber& n);
-	LongNumber& operator=(LongNumber&& n);
+	LongNumber& operator=(LongNumber&& n) noexcept;
 	void setData(const std::vector<TYPE>& data, bool negative);
 	void setData(std::vector<TYPE>&& data, bool negative);
 	std::pair<std::vector<TYPE>, bool> getData() const;

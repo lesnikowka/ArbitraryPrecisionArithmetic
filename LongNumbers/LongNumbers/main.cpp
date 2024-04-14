@@ -1,8 +1,9 @@
 #include <iostream>
+#include "LongNumber.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    LongNumber n1;
 }
 
 
