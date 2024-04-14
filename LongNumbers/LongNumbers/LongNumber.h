@@ -26,15 +26,22 @@ public:
 	LongNumber operator-(const LongNumber& n) const;
 	void operator-=(const LongNumber& n);
 	LongNumber operator-() const;
-	bool operator==(const LongNumber& n);
-
+	bool operator==(const LongNumber& n) const;
+	bool operator<(const LongNumber& n) const;
+	bool operator>(const LongNumber& n) const;
+	bool operator<=(const LongNumber& n) const;
+	bool operator>=(const LongNumber& n) const;
 
 	std::string getString() const;
 	
 private:
 
+	bool _absIsLess(const LongNumber& n) const;
+	bool _absIsGreater(const LongNumber& n) const;
+	bool _absIsEqual(const LongNumber& n) const;
 	static void _checkZero(LongNumber& n);
 	static BIG_TYPE _getMaxTypeValue();
+	
 
 	std::vector<TYPE> _data;
 	bool _negative;

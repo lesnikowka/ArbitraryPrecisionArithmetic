@@ -156,14 +156,113 @@ LongNumber LongNumber::operator-() const
 	return result;
 }
 
-bool LongNumber::operator==(const LongNumber& n)
+bool LongNumber::operator==(const LongNumber& n) const
 {
 	return _negative == n._negative && _data == n._data;
+}
+
+bool LongNumber::operator<(const LongNumber& n) const
+{
+	if (!_negative && !n._negative)
+	{
+		return _absIsLess(n);
+	}
+	else if (_negative && n._negative)
+	{
+		return _absIsGreater(n);
+	}
+	if (_data.size() == 0 && n._data.size() == 0)
+	{
+		return false;
+	}
+	if (!_negative && n._negative)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool LongNumber::operator>(const LongNumber& n) const
+{
+	return !((*this) < n || (*this) == n);
+}
+
+bool LongNumber::operator<=(const LongNumber& n) const
+{
+	return !((*this) > n);
+}
+
+bool LongNumber::operator>=(const LongNumber& n) const
+{
+	return !((*this) < n);
 }
 
 std::string LongNumber::getString() const
 {
 	return std::string();
+}
+
+bool LongNumber::_absIsLess(const LongNumber& n) const
+{
+	if (_data.size() < n._data.size())
+	{
+		return true;
+	}
+	else if (_data.size() > n._data.size())
+	{
+		return false;
+	}
+
+	for (long long i = _data.size() - 1; i >= 0; i--)
+	{
+		if (_data[i] < n._data[i])
+		{
+			return true;
+		}
+		else if (_data[i] > n._data[i])
+		{
+			return false;
+		}
+	}
+
+	return false;
+}
+
+bool LongNumber::_absIsGreater(const LongNumber& n) const
+{
+	if (_data.size() > n._data.size())
+	{
+		return true;
+	}
+	else if (_data.size() < n._data.size())
+	{
+		return false;
+	}
+
+	for (long long i = _data.size() - 1; i >= 0; i--)
+	{
+		if (_data[i] < n._data[i])
+		{
+			return false;
+		}
+		else if (_data[i] > n._data[i])
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool LongNumber::_absIsEqual(const LongNumber& n) const
+{
+	if (_data.size() != n._data.size())
+	{
+		return false;
+	}
+
+	return _data == n._data;
 }
 
 void LongNumber::_checkZero(LongNumber& n)
